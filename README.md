@@ -42,18 +42,32 @@ Details, env vars, and known gaps: see [`METHODOLOGY_STATUS.md`](METHODOLOGY_STA
 
 ## Uploading to GitHub
 
-1. Create an empty repository on GitHub (no README/license if you will push an existing tree).
-2. From this directory:
+This repo is **already initialized** with `main` and an initial commit (if you cloned before that step, run `git init` yourself).
+
+1. Set your **commit identity** inside this repo (or use `--global`) if Git rejected the first commit:
+
+```bash
+git config user.name "Your Name"
+git config user.email "you@example.com"
+# Optional: fix the placeholder author on the first commit
+git commit --amend --reset-author --no-edit
+```
+
+2. Create an empty repository on GitHub (no README/license if you will push this tree).
+
+3. From this directory:
 
 ```bash
 git remote add origin https://github.com/<USER>/<REPO>.git
-git branch -M main
 git push -u origin main
 ```
 
-3. Confirm `.venv` is **not** tracked (`git status` should not list it). If it was committed by mistake, remove it from history or use `git rm -r --cached .venv`.
+4. Confirm `.venv` is **not** tracked (`git ls-files` must not list `.venv/`). The `.gitignore` excludes it.
 
-4. Optional: add a **LICENSE** file and clarify redistribution terms for `Methodology v.01.docx` and WQP/USGS-derived CSVs.
+5. **`Methodology v.01.docx`** is currently **untracked**. Add it only if you have redistribution rights:  
+   `git add "Methodology v.01.docx" && git commit -m "Add methodology document"`
+
+6. Optional: add a **LICENSE** file and clarify terms for the Word doc and WQP/USGS-derived CSVs.
 
 ## Data provenance
 
