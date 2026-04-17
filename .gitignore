@@ -1,0 +1,45 @@
+# Virtual environments (do not commit — recreate with requirements_methodology.txt)
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+*.egg
+
+# Jupyter
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/
+
+# Environment / secrets (never commit tokens)
+.env
+.env.*
+!.env.example
+
+# Test / tooling
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE (optional local overrides — keep .vscode/settings.json portable in repo)
+.idea/
+
+# Torch / large caches (if created under project root)
+.pytest_tmp/
