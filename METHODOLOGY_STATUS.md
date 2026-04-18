@@ -2,6 +2,8 @@
 
 This file is the **handoff map** for humans and agents: what is implemented in `Water/`, what is partial, and what remains to reach a “complete” alignment with *Methodology v.01* and a reproducible public-data story.
 
+**Writing the methods paper / report:** read [`WRITER_HANDOFF.md`](WRITER_HANDOFF.md) first (reduced-scope freeze for co-authors), then [`REPORT_AND_SUBMISSION.md`](REPORT_AND_SUBMISSION.md) for citations, limitations, data-availability wording, and the co-author checklist. **Word doc ↔ code:** [`METHODOLOGY_DOC_ALIGNMENT.md`](METHODOLOGY_DOC_ALIGNMENT.md).
+
 ---
 
 ## Done (implemented in repo)
@@ -13,11 +15,11 @@ This file is the **handoff map** for humans and agents: what is implemented in `
 - **RL:** `WastewaterMDP` (Table 8–10 style), **PPO** (`ppo_train`), curriculum masking, Dyna hook, hybrid physics→LSTM (Eq. 5), eval with `physics_warm=0` for surrogate rollouts.
 - **Evaluation:** `rollout_policy`, **Wilcoxon** helpers; **RBT / PID** baselines in code paths used by the notebook / small experiments.
 - **Table 2 naming:** `RDI_TABLE2`, `rdi_dataset_name`, `rdi_table2_lines()`, synth aliases aligned to methodology Table 2 labels.
-- **`run_full_pipeline`:** Calls **`water_rdi_loaders.build_table2_mixed`** for DS-1…DS-5 (unless `WATER_USE_SYNTH_ONLY=1` or import/runtime failure → full synth fallback). Returns **`table2_flags`** dict indicating which datasets used public/real paths vs synth. Replaces DS-1 with synth if NWIS returns **fewer than 500** rows after load. Uses **real DS-5 IV** for σ when length and `pH` are sufficient, else synth Hz.
+- **`run_full_pipeline`:** Calls **`water_rdi_loaders.build_table2_mixed`** for DS-1…DS-5 (unless `WATER_USE_SYNTH_ONLY=1` or import/runtime failure → full synth fallback). Returns **`table2_flags`** dict indicating which datasets used public/real paths vs synth. Replaces DS-1 with synth if NWIS returns **fewer than 500** rows after load. Uses **real DS-5** (KU-MWQ or NWIS IV per `WATER_DS5_SOURCE`) for σ when length and `pH` are sufficient, else synth Hz.
 
 ### Public / real data (`water_rdi_loaders.py`)
 
-- **DS-1 / DS-5:** USGS NWIS **IV** (JSON), mapped to DS-1 schema (15‑min resample) and DS-5 wide stream with `pH` / `conductivity_uScm` names where codes exist.
+- **DS-1 / DS-5:** DS-1 from USGS NWIS **IV** (JSON), 15‑min resample. **DS-5** defaults to bundled **KU-MWQ** 30 cm Excel (`WATER_DS5_SOURCE=auto` when the file exists; DOI [10.17632/34rczh25kc.4](https://data.mendeley.com/datasets/34rczh25kc/4)); else NWIS IV at native sampling with `pH` / `conductivity_uScm` where parameter codes exist.
 - **DS-4:** NWIS **DV** → monthly medians. Tries **`WATER_NWIS_SITE_DS4`** if set, else **DS-1 site**, then **`WATER_NWIS_DV_FALLBACK_SITES`** (default includes **01646500** — Potomac at Point of Rocks, MD — which has daily **00400**+**00095** where Choptank **01491000** often lacks pH DV).
 - **DS-2:** `WATER_DS2_CSV` optional; if unset, **auto-load** bundled `data/rdi/ds2_wqp_usgsmd_ca_mg_spc_paired.csv` when present (~12k rows): WQP **USGS-MD** Ca + Mg → hardness proxy (2.497·Ca + 4.118·Mg mg/L as CaCO₃) merged with specific conductance on same **ActivityIdentifier** (from project `ds2_spc_MD_sample.csv` + downloaded Ca/Mg extracts used to build the paired file).
 - **DS-3:** `WATER_DS3_CSV` optional; if unset, **auto-load** bundled `data/rdi/ds3_wqp_effluent_md_proxy.csv` (WQP **Effluent** pH, Maryland 2020–2021 partial export; `discharge_class` / `effluent_type` / `compliance_status` are **derived** from sample-fraction, org name, and pH/qualifier heuristics — not a regulatory adjudication).
@@ -44,7 +46,8 @@ This file is the **handoff map** for humans and agents: what is implemented in `
 
 | Item | Notes |
 |------|--------|
-| **DS-1 / DS-5 NWIS** | Real when `waterservices.usgs.gov` returns IV for `WATER_NWIS_SITE_DS1` (default `01491000`). Offline or API errors → synth. |
+| **DS-1 NWIS** | Real when `waterservices.usgs.gov` returns IV for `WATER_NWIS_SITE_DS1` (default `01491000`). Offline or API errors → synth. |
+| **DS-5** | **KU-MWQ** (bundled 30 cm `.xlsx`) when `WATER_DS5_SOURCE` is `ku_mwq` or `auto` and the file is present; else **NWIS IV** for DS-5. If KU load fails and IV exists → IV. |
 | **DS-4 NWIS DV** | Real when any tried site yields ≥12 monthly rows after merge (fallback chain avoids Choptank-only DV gaps). |
 | **DS-2** | Real when bundled CSV exists (or `WATER_DS2_CSV` set). |
 | **DS-3** | Real when bundled `ds3_wqp_effluent_md_proxy.csv` exists (or `WATER_DS3_CSV` set); columns beyond pH are **heuristic** labels on real effluent pH. |
@@ -85,7 +88,10 @@ Prioritize in this order unless the manuscript scope says otherwise.
 | `WATER_NWIS_SITE_DS1` | NWIS site for DS-1 + DS-5 IV (default `01491000`). |
 | `WATER_NWIS_SITE_DS4` | Optional NWIS site for DS-4 DV first attempt (else tries DS-1 site, then fallbacks). |
 | `WATER_NWIS_DV_FALLBACK_SITES` | Comma-separated USGS sites for DS-4 DV (default `01646500`). |
+| `WATER_DS5_SOURCE` | `auto` (use KU-MWQ file if present), `ku_mwq`, or `nwis`. |
+| `WATER_DS5_KU_MWQ_XLSX` | Optional path to KU-MWQ 30 cm workbook. |
 | `WATER_TABLE2_REQUIRE_REAL` | `1` / `true` / `yes` — fail if any Table-2 slot is synthetic. |
+| Table 6 gates (code) | `TABLE6_GATE_RMSE` / `TABLE6_GATE_MAE_DPH` / `TABLE6_GATE_SEC232_MEDIAN_DPH` = **0.10** / **0.07** / **0.25** (`water_methodology_impl.py`; *Methodology v.01* Table 6). |
 
 ---
 
@@ -95,6 +101,7 @@ Prioritize in this order unless the manuscript scope says otherwise.
 - Table 2 loaders: `water_rdi_loaders.py`  
 - Bundled DS-2: `data/rdi/ds2_wqp_usgsmd_ca_mg_spc_paired.csv`  
 - Bundled DS-3: `data/rdi/ds3_wqp_effluent_md_proxy.csv`  
+- KU-MWQ DS-5 (optional default): `data/rdi/KU-MWQ A Dataset for Monitoring Water Quality Using Digital Sensors/Sensor data for 30 cm.xlsx`  
 - Notebook: `methodology_implementation.ipynb`  
 - Small smoke / first pass: `water_experiments_small.py`
 

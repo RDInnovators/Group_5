@@ -7,11 +7,15 @@ Sources (citable **USGS NWIS** public services; not a private “RDI compendium�
   exports you host locally; otherwise falls back to synthetic DS-2.
 - **DS-3** — Optional CSV via ``WATER_DS3_CSV``; if unset, bundled ``data/rdi/ds3_wqp_effluent_md_proxy.csv`` (WQP **Effluent** pH, MD 2020–2021 extract) when present; else synthetic.
 - **DS-4** — USGS **daily** values, aggregated to **monthly** (GEMS/Water–style multi-decadal proxy).
-- **DS-5** — Same NWIS IV stream as DS-1 at native sampling (1 Hz–class IoT proxy).
+- **DS-5** — **KU-MWQ** (Mendeley) Excel under ``data/rdi/`` when selected or when the file is present (``auto``), else the **same NWIS IV** stream as DS-1 at native sampling (IoT proxy).
 
 Environment
 -----------
 ``WATER_USE_SYNTH_ONLY=1`` — skip all downloads; caller should use ``synth_ds*``.
+
+``WATER_DS5_SOURCE`` — ``ku_mwq`` \| ``nwis`` \| ``auto`` (default ``auto``). ``auto`` uses bundled **Sensor data for 30 cm.xlsx** when present, otherwise NWIS IV.
+
+``WATER_DS5_KU_MWQ_XLSX`` — optional path override for the KU-MWQ 30 cm workbook (must include **pH**).
 
 ``WATER_DS2_CSV`` — path to CSV with **real** columns ``hardness_mgL`` and ``conductivity_uScm`` (paired or site-level).
 If unset, a bundled WQP-derived file ``data/rdi/ds2_wqp_usgsmd_ca_mg_spc_paired.csv`` (USGS-MD Ca+Mg→hardness + specific conductance on the same WQP activity) is used when present.
@@ -44,6 +48,102 @@ import pandas as pd
 
 USGS_IV = "https://waterservices.usgs.gov/nwis/iv/"
 USGS_DV = "https://waterservices.usgs.gov/nwis/dv/"
+
+# KU-MWQ — Mendeley Data DOI 10.17632/34rczh25kc.4 (CC BY 4.0); 30 cm sheet has pH + sensors for DS-5.
+_KU_MWQ_DIR = (
+    "KU-MWQ A Dataset for Monitoring Water Quality Using Digital Sensors"
+)
+_KU_MWQ_30CM = "Sensor data for 30 cm.xlsx"
+
+
+def ku_mwq_default_xlsx() -> Path:
+    """Default path to the bundled KU-MWQ 30 cm Excel file (relative to ``Water/``)."""
+    return Path(__file__).resolve().parent / "data" / "rdi" / _KU_MWQ_DIR / _KU_MWQ_30CM
+
+
+def _ds5_source_mode() -> str:
+    """
+    Return ``ku_mwq``, ``nwis``, or ``auto``.
+    ``auto`` → ``ku_mwq`` if the default KU-MWQ file exists, else ``nwis``.
+    """
+    raw = os.environ.get("WATER_DS5_SOURCE", "").strip().lower()
+    if raw in ("ku_mwq", "nwis"):
+        return raw
+    if raw in ("auto", ""):
+        return "ku_mwq" if ku_mwq_default_xlsx().is_file() else "nwis"
+    return "nwis"
+
+
+def load_ds5_ku_mwq(path: Optional[Path] = None) -> pd.DataFrame:
+    """
+    Load **DS-5** from the KU-MWQ 30 cm workbook (pH, temperature, turbidity; ~1 row/min).
+
+    Output columns: ``timestamp`` (UTC), ``pH``, ``temperature_C``, ``turbidity_NTU``.
+    No specific conductance — downstream σ_cond uses defaults when absent.
+    """
+    if path is not None:
+        p = Path(path).expanduser().resolve()
+    elif os.environ.get("WATER_DS5_KU_MWQ_XLSX", "").strip():
+        p = Path(os.environ["WATER_DS5_KU_MWQ_XLSX"].strip()).expanduser().resolve()
+    else:
+        p = ku_mwq_default_xlsx()
+    if not p.is_file():
+        raise FileNotFoundError(f"KU-MWQ DS-5 file not found: {p}")
+
+    try:
+        df = pd.read_excel(p, sheet_name=0, engine="openpyxl")
+    except ImportError as e:
+        raise ImportError(
+            "Reading KU-MWQ .xlsx requires openpyxl (pip install openpyxl)."
+        ) from e
+
+    def _pick(*needles: str) -> str:
+        for col in df.columns:
+            s = str(col).strip().lower()
+            if all(n in s for n in needles):
+                return str(col)
+        raise ValueError(f"KU-MWQ: could not find column matching {needles!r} in {list(df.columns)!r}")
+
+    tcol = _pick("date", "time")
+    tmpcol = _pick("temperature")
+    phcol = None
+    for col in df.columns:
+        if str(col).strip().lower() == "ph":
+            phcol = str(col)
+            break
+    if phcol is None:
+        raise ValueError(f"KU-MWQ: no pH column in {list(df.columns)!r}")
+    tbcol = _pick("turbidity")
+
+    out = pd.DataFrame(
+        {
+            "timestamp": pd.to_datetime(df[tcol], utc=True),
+            "pH": pd.to_numeric(df[phcol], errors="coerce"),
+            "temperature_C": pd.to_numeric(df[tmpcol], errors="coerce"),
+            "turbidity_NTU": pd.to_numeric(df[tbcol], errors="coerce"),
+        }
+    )
+    out = out.dropna(subset=["pH"]).sort_values("timestamp").reset_index(drop=True)
+    if len(out) < 200:
+        raise ValueError(f"KU-MWQ DS-5: expected at least 200 rows with pH, got {len(out)}")
+    return out
+
+
+def _iv_to_ds5_frame(iv: pd.DataFrame) -> pd.DataFrame:
+    """NWIS IV wide table → DS-5 Hz-style frame with canonical column names."""
+    ds5_hz = iv.copy()
+    ds5_hz["timestamp"] = pd.to_datetime(ds5_hz["timestamp"], utc=True)
+    for a, b in (
+        ("00400", "pH"),
+        ("00010", "temperature_C"),
+        ("00095", "conductivity_uScm"),
+        ("63680", "turbidity_NTU"),
+    ):
+        if a in ds5_hz.columns and b not in ds5_hz.columns:
+            ds5_hz[b] = ds5_hz[a]
+    if "pH" not in ds5_hz.columns and "00400" in ds5_hz.columns:
+        ds5_hz["pH"] = ds5_hz["00400"]
+    return ds5_hz
 
 
 def _use_synth_only() -> bool:
@@ -271,9 +371,9 @@ def build_table2_mixed(
     nwis_site_ds4: Optional[str] = None,
 ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, bool]]:
     """
-    Load Table-2 style frames: **USGS real** for DS-1 / DS-4 / DS-5 when the network is reachable;
-    **CSV-backed** DS-2 / DS-3 when ``WATER_DS2_CSV`` / ``WATER_DS3_CSV`` are set; else synthetic
-    fallbacks for DS-2 and DS-3.
+    Load Table-2 style frames: **USGS real** for DS-1 / DS-4 when the network is reachable;
+    **DS-5** from **KU-MWQ** (bundled Excel) or **NWIS IV** per ``WATER_DS5_SOURCE``;
+    **CSV-backed** DS-2 / DS-3 when bundled paths or env point to files; else synthetic fallbacks.
 
     Returns ``(frames, flags)`` with ``flags['DS-1'] == True`` when NWIS IV data was used, etc.
     """
@@ -288,28 +388,37 @@ def build_table2_mixed(
     site4_opt = (nwis_site_ds4 or os.environ.get("WATER_NWIS_SITE_DS4", "")).strip()
     period = "P60D" if demo_mode else "P365D"
 
+    iv: Optional[pd.DataFrame] = None
     try:
         iv = fetch_nwis_iv_site(site1, period=period)
         ds1 = nwis_iv_to_ds1_schema(iv)
-        ds5_hz = iv.copy()
-        ds5_hz["timestamp"] = pd.to_datetime(ds5_hz["timestamp"], utc=True)
-        for a, b in (
-            ("00400", "pH"),
-            ("00010", "temperature_C"),
-            ("00095", "conductivity_uScm"),
-            ("63680", "turbidity_NTU"),
-        ):
-            if a in ds5_hz.columns and b not in ds5_hz.columns:
-                ds5_hz[b] = ds5_hz[a]
-        if "pH" not in ds5_hz.columns and "00400" in ds5_hz.columns:
-            ds5_hz["pH"] = ds5_hz["00400"]
         flags["DS-1"] = True
-        flags["DS-5"] = True
     except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, OSError, ValueError, KeyError, json.JSONDecodeError):
         ds1 = synth_module.synth_ds1(n)
-        ds5_hz = synth_module.synth_ds5_hz(3600 if demo_mode else 7200)
         flags["DS-1"] = False
-        flags["DS-5"] = False
+
+    ds5_hz: Optional[pd.DataFrame] = None
+    mode = _ds5_source_mode()
+    ku_path = os.environ.get("WATER_DS5_KU_MWQ_XLSX", "").strip()
+    ku_p = Path(ku_path).expanduser() if ku_path else None
+    if mode == "ku_mwq":
+        try:
+            ds5_hz = load_ds5_ku_mwq(ku_p)
+            flags["DS-5"] = True
+        except (ImportError, FileNotFoundError, ValueError, OSError, KeyError) as e:
+            if iv is not None:
+                ds5_hz = _iv_to_ds5_frame(iv)
+                flags["DS-5"] = True
+            else:
+                ds5_hz = synth_module.synth_ds5_hz(3600 if demo_mode else 7200)
+                flags["DS-5"] = False
+    else:
+        if iv is not None:
+            ds5_hz = _iv_to_ds5_frame(iv)
+            flags["DS-5"] = True
+        else:
+            ds5_hz = synth_module.synth_ds5_hz(3600 if demo_mode else 7200)
+            flags["DS-5"] = False
 
     sites_dv: List[str] = []
     if site4_opt:

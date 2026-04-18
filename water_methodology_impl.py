@@ -29,9 +29,10 @@ norm, hybrid physics→LSTM; PPO Table 12; RBT & PID Table 15; Wilcoxon; eval en
 `physics_warm=0` for surrogate-only rollouts.
 
 **Bundled elsewhere:** `water_experiments_small.py` runs a **short-sample** first
-pass (Sec 2.3.2 MAPE, Table 6 gates, Table 16 extras, Tier‑2/3 smoke, DDPG, LUT,
-Wilcoxon + Bonferroni + Cohen’s d). Full Table 17 ablations, 3×seeds×5M, and
-SB3/MLflow/Optuna remain optional production tooling.
+pass (Sec 2.3.2 diagnostic, Table 6 gates, Table 16 extras, Tier‑2/3 smoke, DDPG, LUT,
+Wilcoxon + Bonferroni + Cohen’s d). Extended ablations (Table 17), multi-seed runs at
+full PPO budget, and external MLOps are **out of scope** for this repository; see
+`METHODOLOGY_DOC_ALIGNMENT.md` for manuscript vs code scope.
 
 **Table 2 public data:** `water_rdi_loaders.build_table2_mixed` pulls **USGS NWIS**
 IV/DV when the network is available (DS-1 / DS-4 / DS-5), uses the bundled WQP-derived
@@ -75,6 +76,11 @@ DOSE_MAX_ML = float(ACTION_VOLUMES_ML.max())
 PH_LO, PH_HI = 6.5, 8.5
 PH_MID = 7.5
 PH_HARD_LO, PH_HARD_HI = 2.0, 12.0
+
+# Table 6 — surrogate acceptance gates (*Methodology v.01* manuscript)
+TABLE6_GATE_RMSE = 0.10  # surrogate vs simulator / val, pH units
+TABLE6_GATE_MAE_DPH = 0.07  # MAE on ΔpH residuals
+TABLE6_GATE_SEC232_MEDIAN_DPH = 0.25  # Sec 2.3.2 sim-vs-obs median |ΔpH|, pH units
 
 W_COMP, W_DEV, W_DOSE, W_OVER, W_ESC = 2.0, -1.0, -0.3, -0.5, -0.1
 W_UNC = -0.5
@@ -139,7 +145,7 @@ RDI_TABLE2: Dict[str, Dict[str, str]] = {
     "DS-5": {
         "name": "IoT Sensor-Based WQ (1 Hz real-time)",
         "key_parameters": "pH, temperature, turbidity; calibrated sensor with drift logs",
-        "resolution": "1 Hz continuous; includes sensor noise & drift characterization",
+        "resolution": "~1 min–1 Hz continuous (e.g. KU-MWQ or NWIS IV); sensor noise & drift characterization",
         "role": "(a) Noise model fitting; (b) Sim-to-real validation, held-out real trajectories",
     },
 }
@@ -490,6 +496,13 @@ def preprocess_monitor(
     df = df.sort_values("timestamp").reset_index(drop=True).copy()
     if "temperature_C" not in df.columns:
         df["temperature_C"] = 25.0
+    # IoT-only traces (e.g. KU-MWQ) may omit conductivity / DO; use neutral placeholders before ffill.
+    if "conductivity_uScm" not in df.columns:
+        df["conductivity_uScm"] = 900.0
+    if "DO_mgL" not in df.columns:
+        df["DO_mgL"] = 8.0
+    if "turbidity_NTU" not in df.columns:
+        df["turbidity_NTU"] = 5.0
     cols_mon = ["pH", "conductivity_uScm", "DO_mgL", "turbidity_NTU"]
     for c in cols_mon:
         if c in df.columns:
@@ -615,6 +628,14 @@ def preprocess_monitor(
         "cond_mn6h",
         "cond_mx6h",
     ]
+    # Long gaps in raw turbidity / conductivity can survive interpolate+ffill; rolling stats must be finite
+    # for MinMax + LSTM (NaN inputs → NaN loss → corrupted weights).
+    vals = frame[mm_cols].replace([np.inf, -np.inf], np.nan)
+    for c in mm_cols:
+        vals[c] = vals[c].ffill().bfill()
+    col_med = vals.median(numeric_only=True)
+    vals = vals.fillna(col_med).fillna(0.0)
+    frame[mm_cols] = vals
     if fit:
         mm = MinMaxScaler()
         mm.fit(frame[mm_cols].values)
@@ -838,6 +859,7 @@ def train_lstm(
             loss = loss_fn(pred, yb_s)
             opt.zero_grad()
             loss.backward()
+            nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             opt.step()
         sched.step()
         model.eval()
@@ -869,7 +891,9 @@ def train_lstm(
             dph_p = dph_scaler.inverse_transform(pred_s.reshape(-1, 1)).ravel()
             dph_t = yb.cpu().numpy().ravel()
             resids.extend((dph_p - dph_t) ** 2)
-    sigma_model = float(np.sqrt(np.mean(resids))) if resids else 0.05
+    arr = np.asarray(resids, dtype=np.float64)
+    arr = arr[np.isfinite(arr)]
+    sigma_model = float(np.sqrt(np.mean(arr))) if len(arr) else 0.05
     return model, dph_scaler, sigma_model
 
 

@@ -40,6 +40,10 @@ Thumbs.db
 
 # IDE (optional local overrides — keep .vscode/settings.json portable in repo)
 .idea/
+.cursor/
+
+# Proprietary / local-only methodology Word doc (not redistributed here; see README)
+Methodology v.01.docx
 
 # Torch / large caches (if created under project root)
 .pytest_tmp/

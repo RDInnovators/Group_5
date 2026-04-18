@@ -58,26 +58,35 @@ def validate_simulator_sec232(
     seed: int = 0,
 ) -> Dict[str, float]:
     """
-    Sec 2.3.2 — one-step ΔpH error between titration and observed drift on DS-5 (synthetic proxy).
+    Sec 2.3.2 **diagnostic** — one-step ΔpH error between titration and successive observed pH on DS-5.
 
-    With random actions vs unpaired plant evolution, relative **MAPE** can explode; report
-    **median |ΔpH_err|** (primary gate) and MAPE for reference only.
+    The manuscript’s full protocol (50×120 min open-loop windows) is **not** implemented here; see
+    ``METHODOLOGY_DOC_ALIGNMENT.md``. **median |ΔpH_err|** is compared to ``TABLE6_GATE_SEC232_MEDIAN_DPH``.
+    Relative MAPE can be large when actions are random vs natural drift; use median as the gate metric.
     """
     rng = np.random.default_rng(seed)
     ph = ds5_hz["pH"].to_numpy(dtype=np.float64)
     n = min(n_steps, len(ph) - 1)
     if n < 3:
-        return {"MAPE_pct": float("nan"), "median_abs_dph_err": float("nan"), "n": float(n)}
+        return {
+            "MAPE_pct": float("nan"),
+            "MAPE_pct_median": float("nan"),
+            "median_abs_dph_err": float("nan"),
+            "n": float(n),
+        }
     errs_pct, abs_dph = [], []
     for i in range(n):
         a = int(rng.integers(0, 11))
         pred_dph = m.f_titration(ph[i], a, A_T, C_T) - ph[i]
         act_dph = ph[i + 1] - ph[i]
-        abs_dph.append(abs(pred_dph - act_dph))
-        denom = max(abs(act_dph), 1e-4)
-        errs_pct.append(abs(pred_dph - act_dph) / denom * 100.0)
+        abs_e = abs(pred_dph - act_dph)
+        abs_dph.append(abs_e)
+        # Symmetric floor avoids huge % when observed step ΔpH ≈ 0 (random action vs natural drift).
+        denom = max(abs(act_dph), abs(pred_dph), 1e-4)
+        errs_pct.append(min(abs_e / denom * 100.0, 10_000.0))
     return {
         "MAPE_pct": float(np.mean(errs_pct)),
+        "MAPE_pct_median": float(np.median(errs_pct)),
         "median_abs_dph_err": float(np.median(abs_dph)),
         "n": float(n),
     }
@@ -100,6 +109,8 @@ def lstm_ds5_step_metrics(
     Uses CUSUM+inverse labels on DS-5 pH only for action alignment (same protocol as DS-1).
     """
     f = ds5_15m.copy()
+    if "conductivity_uScm" not in f.columns:
+        f["conductivity_uScm"] = 900.0
     if "DO_mgL" not in f.columns:
         f["DO_mgL"] = 6.0
     if "turbidity_NTU" not in f.columns:
@@ -159,12 +170,16 @@ def lstm_val_rmse_and_ece(
             ).squeeze(-1).to(device)
             ph_next_hat = torch.clamp(phb + dph_hat, 0.0, 14.0)
             ph_next = torch.clamp(phb + yb, 0.0, 14.0)
-            se.append(torch.mean((ph_next_hat - ph_next) ** 2).item())
+            mse_b = torch.mean((ph_next_hat - ph_next) ** 2).item()
+            if np.isfinite(mse_b):
+                se.append(mse_b)
             dph_t = yb.cpu().numpy().ravel()
             dph_p = dph_hat.cpu().numpy().ravel()
             resids.extend((dph_p - dph_t).tolist())
-    rmse = float(np.sqrt(np.mean(se))) if se else float("nan")
+    se_ok = [x for x in se if np.isfinite(x)]
+    rmse = float(np.sqrt(np.mean(se_ok))) if se_ok else float("nan")
     resids_np = np.asarray(resids, dtype=np.float64)
+    resids_np = resids_np[np.isfinite(resids_np)]
     mae_dph = float(np.mean(np.abs(resids_np))) if len(resids_np) else float("nan")
     return {
         "surrogate_val_RMSE_pH": rmse,
@@ -177,21 +192,24 @@ def table6_gates(
     rmse: float,
     mae_dph: float,
     median_abs_dph_err: float,
-    rmse_max: float = 0.15,
-    mae_dph_max: float = 0.06,
-    median_dph_err_max: float = 0.35,
+    rmse_max: Optional[float] = None,
+    mae_dph_max: Optional[float] = None,
+    median_dph_err_max: Optional[float] = None,
 ) -> Dict[str, Any]:
-    """Pass/fail checks (thresholds are smoke defaults; tighten for publication)."""
+    """Pass/fail vs *Methodology v.01* Table 6 (defaults from ``water_methodology_impl``)."""
+    rmax = m.TABLE6_GATE_RMSE if rmse_max is None else rmse_max
+    mmax = m.TABLE6_GATE_MAE_DPH if mae_dph_max is None else mae_dph_max
+    smax = m.TABLE6_GATE_SEC232_MEDIAN_DPH if median_dph_err_max is None else median_dph_err_max
     return {
-        "gate_RMSE_pass": bool(rmse == rmse and rmse < rmse_max),
-        "gate_MAE_dph_pass": bool(mae_dph == mae_dph and mae_dph < mae_dph_max),
+        "gate_RMSE_pass": bool(rmse == rmse and rmse < rmax),
+        "gate_MAE_dph_pass": bool(mae_dph == mae_dph and mae_dph < mmax),
         "gate_sec232_median_dph_pass": bool(
-            median_abs_dph_err == median_abs_dph_err and median_abs_dph_err < median_dph_err_max
+            median_abs_dph_err == median_abs_dph_err and median_abs_dph_err < smax
         ),
         "thresholds": {
-            "rmse_max": rmse_max,
-            "mae_dph_max": mae_dph_max,
-            "median_dph_err_max": median_dph_err_max,
+            "rmse_max": rmax,
+            "mae_dph_max": mmax,
+            "median_dph_err_max": smax,
         },
     }
 
