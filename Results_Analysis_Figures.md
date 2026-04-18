@@ -1,19 +1,23 @@
-# Results analysis — figures in `figures_paper/`
+# Results analysis - figures in `figures_paper/`
 
-This document explains **what each saved figure represents** and how to **interpret** it in a methods paper (Journal of Water Process Engineering–style framing). Numeric examples depend on your last notebook run; always cite **your** printed metrics next to each figure.
+This document explains **what each saved figure represents** and how to **interpret** it in a methods paper (Journal of Water Process Engineering-style framing). Numeric examples depend on your last notebook run; always cite **your** printed metrics next to each figure.
 
 **Figure directory:** `figures_paper/` (300 dpi PNG from `paper_figures.py`, driven by `methodology_implementation.ipynb`).
+
+If images do not appear, open this file from the **`Water/`** project folder so relative paths resolve, or run the notebook to regenerate PNGs.
 
 ---
 
 ## 1. `fig_ds1_ph_timeseries.png`
+
+![DS-1 pH time series (15 min)](figures_paper/fig_ds1_ph_timeseries.png)
 
 **What it is:** Time series of **pH** from **DS-1** (large-scale water-quality monitoring) at **15-minute** resolution, over the window loaded for the run.
 
 **What it supports in the paper**
 
 - Shows the **primary training signal** for the LSTM comes from **real public monitoring**, not synthetic data (if `TABLE2_FLAGS['DS-1']` is true).
-- Motivates **why action reconstruction matters**: pH moves smoothly; **CUSUM** may or may not flag “dosing” events on a given river window — discuss if your Table 3 shows zero events.
+- Motivates **why action reconstruction matters**: pH moves smoothly; **CUSUM** may or may not flag “dosing” events on a given river window - discuss if your Table 3 shows zero events.
 
 **How to describe**
 
@@ -24,7 +28,9 @@ This document explains **what each saved figure represents** and how to **interp
 
 ## 2. `fig_ds5_sensors.png`
 
-**What it is:** **Three stacked panels** — typically **pH**, **temperature**, and **turbidity** (or conductivity if turbidity missing) — from **DS-5** high-frequency IoT-style data (e.g. KU-MWQ **30 cm** when bundled).
+![DS-5 high-frequency sensors (pH, temperature, turbidity)](figures_paper/fig_ds5_sensors.png)
+
+**What it is:** **Three stacked panels** - typically **pH**, **temperature**, and **turbidity** (or conductivity if turbidity missing) - from **DS-5** high-frequency IoT-style data (e.g. KU-MWQ **30 cm** when bundled).
 
 **What it supports**
 
@@ -40,6 +46,8 @@ This document explains **what each saved figure represents** and how to **interp
 
 ## 3. `fig_ds4_monthly_ph.png`
 
+![DS-4 monthly pH (OOD proxy)](figures_paper/fig_ds4_monthly_ph.png)
+
 **What it is:** **Monthly** pH from **DS-4** (global multi-decadal proxy, e.g. NWIS DV), long horizon.
 
 **What it supports**
@@ -49,11 +57,13 @@ This document explains **what each saved figure represents** and how to **interp
 
 **How to describe**
 
-- “DS-4 monthly pH — excluded from training; used for OOD diagnostics (Sec 7.1 Q2).”
+- “DS-4 monthly pH - excluded from training; used for OOD diagnostics (Sec 7.1 Q2).”
 
 ---
 
 ## 4. `fig_dcr_boxplot.png`
+
+![Tier-1 DCR boxplot: PPO vs baselines](figures_paper/fig_dcr_boxplot.png)
 
 **What it is:** **Box plots** of **DCR** (discharge compliance rate, %) for **PPO** vs **RBT, PID, LUT** over the **demo** episode count in the notebook.
 
@@ -63,7 +73,7 @@ This document explains **what each saved figure represents** and how to **interp
 
 **How to interpret**
 
-- **Under demo budgets**, PPO may **underperform** classical baselines — that is a **valid result** (insufficient training, stochastic env, or policy not converged), not a plotting error.
+- **Under demo budgets**, PPO may **underperform** classical baselines - that is a **valid result** (insufficient training, stochastic env, or policy not converged), not a plotting error.
 - For publication claims, run **`DEMO_MODE = False`** and more episodes; report **mean ± SD** and **Wilcoxon** \(p\)-values printed in the notebook.
 
 **Suggested paper wording**
@@ -73,6 +83,8 @@ This document explains **what each saved figure represents** and how to **interp
 ---
 
 ## 5. `fig_ood_feature_shift.png`
+
+![OOD mean feature shift: DS-4 vs DS-1 train](figures_paper/fig_ood_feature_shift.png)
 
 **What it is:** **Bar chart** of **mean difference in normalized feature space**: **DS-4** minus **DS-1 training** mean, for the **first eight** overlapping monitor features (e.g. `pH_raw`, `dPH`, rolls, `cond`, `DO`).
 
@@ -92,9 +104,9 @@ This document explains **what each saved figure represents** and how to **interp
 
 | Question | Primary evidence in this repo |
 |----------|-------------------------------|
-| **Q1** — vs baselines | `fig_dcr_boxplot.png` + printed Wilcoxon lines |
-| **Q2** — OOD | `fig_ood_feature_shift.png` + optional narrative on DS-4 init in extended runs |
-| **Q3** — sim-to-real | DS-5 plots + Sec 2.3.2 metrics + DS-5 LSTM gate metrics in notebook output |
+| **Q1** - vs baselines | `fig_dcr_boxplot.png` + printed Wilcoxon lines |
+| **Q2** - OOD | `fig_ood_feature_shift.png` + optional narrative on DS-4 init in extended runs |
+| **Q3** - sim-to-real | DS-5 plots + Sec 2.3.2 metrics + DS-5 LSTM gate metrics in notebook output |
 
 ---
 
@@ -102,8 +114,8 @@ This document explains **what each saved figure represents** and how to **interp
 
 Copy from your run (values change with seed and `DEMO_MODE`):
 
-- **Table 6–style gates:** surrogate val RMSE / MAE(ΔpH), Sec 2.3.2 **median \|ΔpH\|**, pass/fail vs `TABLE6_GATE_*`.
-- **Sec 2.3.2 dict:** `MAPE_pct`, `MAPE_pct_median`, `median_abs_dph_err` — emphasize **median absolute error** as the stable gate; MAPE is auxiliary.
+- **Table 6-style gates:** surrogate val RMSE / MAE(ΔpH), Sec 2.3.2 **median \|ΔpH\|**, pass/fail vs `TABLE6_GATE_*`.
+- **Sec 2.3.2 dict:** `MAPE_pct`, `MAPE_pct_median`, `median_abs_dph_err` - emphasize **median absolute error** as the stable gate; MAPE is auxiliary.
 - **MC-Dropout:** uncertainty **p95** used as RL penalty threshold.
 - **Tier-1 smoke:** `methodology_first_pass_small` prints consolidated keys (`tier1`, `table6_gates`, etc.).
 

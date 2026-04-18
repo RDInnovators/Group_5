@@ -1,4 +1,4 @@
-# Water — MBRL wastewater dosing (Methodology v.01)
+# Water - MBRL wastewater dosing (Methodology v.01)
 
 Python implementation and Jupyter walkthrough for the methodology pipeline.
 

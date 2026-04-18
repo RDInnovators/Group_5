@@ -1,4 +1,4 @@
-# Virtual environments (do not commit — recreate with requirements_methodology.txt)
+# Virtual environments (do not commit - recreate with requirements_methodology.txt)
 .venv/
 venv/
 env/
@@ -38,7 +38,7 @@ Thumbs.db
 *.swo
 *~
 
-# IDE (optional local overrides — keep .vscode/settings.json portable in repo)
+# IDE (optional local overrides - keep .vscode/settings.json portable in repo)
 .idea/
 .cursor/
 
