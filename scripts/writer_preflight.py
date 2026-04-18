@@ -47,9 +47,10 @@ def main() -> int:
     print(f"  KU-MWQ default path exists: {ku.is_file()} ({ku})")
 
     for p in (
-        ROOT / "WRITER_HANDOFF.md",
-        ROOT / "REPORT_AND_SUBMISSION.md",
-        ROOT / "METHODOLOGY_DOC_ALIGNMENT.md",
+        ROOT / "README.md",
+        ROOT / "Methodology_v01_Walkthrough.md",
+        ROOT / "Implementation_and_Remaining_Work.md",
+        ROOT / "Results_Analysis_Figures.md",
         ROOT / "methodology_implementation.ipynb",
     ):
         ok = p.is_file()

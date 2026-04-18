@@ -61,7 +61,7 @@ def validate_simulator_sec232(
     Sec 2.3.2 **diagnostic** — one-step ΔpH error between titration and successive observed pH on DS-5.
 
     The manuscript’s full protocol (50×120 min open-loop windows) is **not** implemented here; see
-    ``METHODOLOGY_DOC_ALIGNMENT.md``. **median |ΔpH_err|** is compared to ``TABLE6_GATE_SEC232_MEDIAN_DPH``.
+    ``Implementation_and_Remaining_Work.md``. **median |ΔpH_err|** is compared to ``TABLE6_GATE_SEC232_MEDIAN_DPH``.
     Relative MAPE can be large when actions are random vs natural drift; use median as the gate metric.
     """
     rng = np.random.default_rng(seed)

@@ -32,7 +32,7 @@ norm, hybrid physics→LSTM; PPO Table 12; RBT & PID Table 15; Wilcoxon; eval en
 pass (Sec 2.3.2 diagnostic, Table 6 gates, Table 16 extras, Tier‑2/3 smoke, DDPG, LUT,
 Wilcoxon + Bonferroni + Cohen’s d). Extended ablations (Table 17), multi-seed runs at
 full PPO budget, and external MLOps are **out of scope** for this repository; see
-`METHODOLOGY_DOC_ALIGNMENT.md` for manuscript vs code scope.
+`Implementation_and_Remaining_Work.md` for manuscript vs code scope.
 
 **Table 2 public data:** `water_rdi_loaders.build_table2_mixed` pulls **USGS NWIS**
 IV/DV when the network is available (DS-1 / DS-4 / DS-5), uses the bundled WQP-derived
