@@ -1,0 +1,33 @@
+{
+  "episodes": 60,
+  "per_policy": {
+    "pid_deadband": {
+      "total_reward_mean": 1636.6468348253532,
+      "total_reward_sd": 95.9065375519494,
+      "steps_mean": 480.0
+    },
+    "lut": {
+      "total_reward_mean": 1625.193044058122,
+      "total_reward_sd": 186.44838171660967,
+      "steps_mean": 480.0
+    },
+    "null": {
+      "total_reward_mean": 518.5215511565727,
+      "total_reward_sd": 1020.8864090573386,
+      "steps_mean": 480.0
+    }
+  },
+  "ordering": {
+    "pid_gt_lut": true,
+    "lut_gt_null": true,
+    "pid_gt_null": true,
+    "pid_minus_lut": 11.453790767231112,
+    "lut_minus_null": 1106.6714929015493,
+    "pid_minus_null": 1118.1252836687804,
+    "means": {
+      "pid": 1636.6468348253532,
+      "lut": 1625.193044058122,
+      "null": 518.5215511565727
+    }
+  }
+}

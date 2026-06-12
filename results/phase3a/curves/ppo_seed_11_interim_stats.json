@@ -1,0 +1,14 @@
+{
+  "rows": 2442,
+  "eval_points": 50,
+  "first_eval_step": 100352.0,
+  "first_eval_dcr": 20.893970893970895,
+  "last_eval_step": 5000000.0,
+  "last_eval_dcr": 1.6216216216216222,
+  "dcr_early5_mean": 20.41372141372141,
+  "dcr_mid5_mean": 1.4740124740124743,
+  "dcr_last5_mean": 1.6694386694386698,
+  "dcr_last10_mean": 1.626819126819127,
+  "reward_first200_mean": 0.001576243964517652,
+  "reward_last200_mean": 0.0033145247792575163
+}

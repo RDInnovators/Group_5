@@ -1,49 +1,12 @@
-# Virtual environments (do not commit - recreate with requirements_methodology.txt)
+# Python caches and environments
+__pycache__/
+*.pyc
 .venv/
 venv/
-env/
 
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-*.egg-info/
-.eggs/
-dist/
-build/
-*.egg
-
-# Jupyter
-.ipynb_checkpoints/
-*/.ipynb_checkpoints/
-
-# Environment / secrets (never commit tokens)
-.env
-.env.*
-!.env.example
-
-# Test / tooling
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-
-# OS / editor
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-*~
-
-# IDE (optional local overrides - keep .vscode/settings.json portable in repo)
-.idea/
-.cursor/
-
-# Proprietary / local-only methodology Word doc (not redistributed here; see README)
-Methodology v.01.docx
-
-# Torch / large caches (if created under project root)
-.pytest_tmp/
+# Oversized files (>95MB) that would fail GitHub push
+results/phase3_full/curves/ddpg/ddpg_seed_11_curve.csv
+results/phase3_full/curves/ddpg/ddpg_seed_22_curve.csv
+results/phase3_full/curves/ddpg/ddpg_seed_33_curve.csv
+data/n2o_dataset/aved_raw.csv
+data/n2o_dataset/aved_raw_semicolon.csv

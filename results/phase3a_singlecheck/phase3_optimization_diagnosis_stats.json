@@ -1,0 +1,23 @@
+{
+  "seed": 11,
+  "total_steps": 100000,
+  "device": "cuda",
+  "advantage_normalization_enabled": true,
+  "elapsed_sec": 298.9934113025665,
+  "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_optdiag_100k_curve.csv",
+  "eval_dcr_first": 42.266112266112266,
+  "eval_dcr_last": 19.51143451143451,
+  "eval_dcr_last3_mean": 20.22869022869023,
+  "eval_entropy_first": 2.3752680541326603,
+  "eval_entropy_last": 2.370892584994435,
+  "vf_loss_first": 1093.8430709838867,
+  "vf_loss_last": 247.27816486358643,
+  "vf_loss_min": 183.82481575012207,
+  "vf_loss_max": 1093.8430709838867,
+  "explained_variance_first": 0.0006796620845666013,
+  "explained_variance_last": -0.0018697284957205351,
+  "explained_variance_mean": 0.0013307816232148966,
+  "adv_raw_std_mean": 28.55115964461346,
+  "value_target_std_mean": 28.567671165048594,
+  "episode_return_std_mean": 277.22032628261854
+}

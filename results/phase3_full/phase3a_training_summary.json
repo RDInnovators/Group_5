@@ -1,0 +1,122 @@
+{
+  "device": "cuda",
+  "locked_config": {
+    "reward_scale": 0.1,
+    "gamma": 0.99,
+    "vf_coef": 0.5,
+    "critic": "default",
+    "advantage_norm": true,
+    "reward_form": "raw with signed compliance term, W_COMP=3.0"
+  },
+  "training": {
+    "ppo_full": {
+      "11": {
+        "model_path": "results/phase3_full/models/ppo_full/ppo_full_seed_11.pt",
+        "curve_path": "results/phase3_full/curves/ppo_full/ppo_full_seed_11_curve.csv",
+        "final_eval_dcr": 74.72972972972973,
+        "wall_seconds": 0.0
+      },
+      "22": {
+        "model_path": "results/phase3_full/models/ppo_full/ppo_full_seed_22.pt",
+        "curve_path": "results/phase3_full/curves/ppo_full/ppo_full_seed_22_curve.csv",
+        "final_eval_dcr": 96.67359667359668,
+        "wall_seconds": 0.0
+      },
+      "33": {
+        "model_path": "results/phase3_full/models/ppo_full/ppo_full_seed_33.pt",
+        "curve_path": "results/phase3_full/curves/ppo_full/ppo_full_seed_33_curve.csv",
+        "final_eval_dcr": 47.4948024948025,
+        "wall_seconds": 0.0
+      }
+    },
+    "ppo_no_curriculum": {
+      "11": {
+        "model_path": "results/phase3_full/models/ppo_no_curriculum/ppo_no_curriculum_seed_11.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_curriculum/ppo_no_curriculum_seed_11_curve.csv",
+        "final_eval_dcr": 69.8960498960499,
+        "wall_seconds": 0.0
+      },
+      "22": {
+        "model_path": "results/phase3_full/models/ppo_no_curriculum/ppo_no_curriculum_seed_22.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_curriculum/ppo_no_curriculum_seed_22_curve.csv",
+        "final_eval_dcr": 85.13513513513513,
+        "wall_seconds": 0.0
+      },
+      "33": {
+        "model_path": "results/phase3_full/models/ppo_no_curriculum/ppo_no_curriculum_seed_33.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_curriculum/ppo_no_curriculum_seed_33_curve.csv",
+        "final_eval_dcr": 64.67775467775468,
+        "wall_seconds": 0.0
+      }
+    },
+    "ppo_no_escalation": {
+      "11": {
+        "model_path": "results/phase3_full/models/ppo_no_escalation/ppo_no_escalation_seed_11.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_escalation/ppo_no_escalation_seed_11_curve.csv",
+        "final_eval_dcr": 88.49272349272348,
+        "wall_seconds": 11160.362289190292,
+        "status": "trained_subprocess"
+      },
+      "22": {
+        "model_path": "results/phase3_full/models/ppo_no_escalation/ppo_no_escalation_seed_22.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_escalation/ppo_no_escalation_seed_22_curve.csv",
+        "final_eval_dcr": 91.38253638253637,
+        "wall_seconds": 11289.231291532516,
+        "status": "trained_subprocess"
+      },
+      "33": {
+        "model_path": "results/phase3_full/models/ppo_no_escalation/ppo_no_escalation_seed_33.pt",
+        "curve_path": "results/phase3_full/curves/ppo_no_escalation/ppo_no_escalation_seed_33_curve.csv",
+        "final_eval_dcr": 6.663201663201664,
+        "wall_seconds": 11448.248706817627,
+        "status": "trained_subprocess"
+      }
+    },
+    "ppo_neither": {
+      "11": {
+        "model_path": "results/phase3_full/models/ppo_neither/ppo_neither_seed_11.pt",
+        "curve_path": "results/phase3_full/curves/ppo_neither/ppo_neither_seed_11_curve.csv",
+        "final_eval_dcr": 86.22661122661123,
+        "wall_seconds": 11300.890616178513,
+        "status": "trained_subprocess"
+      },
+      "22": {
+        "model_path": "results/phase3_full/models/ppo_neither/ppo_neither_seed_22.pt",
+        "curve_path": "results/phase3_full/curves/ppo_neither/ppo_neither_seed_22_curve.csv",
+        "final_eval_dcr": 89.86486486486487,
+        "wall_seconds": 11273.386333703995,
+        "status": "trained_subprocess"
+      },
+      "33": {
+        "model_path": "results/phase3_full/models/ppo_neither/ppo_neither_seed_33.pt",
+        "curve_path": "results/phase3_full/curves/ppo_neither/ppo_neither_seed_33_curve.csv",
+        "final_eval_dcr": 70.38461538461539,
+        "wall_seconds": 11379.360451936722,
+        "status": "trained_subprocess"
+      }
+    },
+    "ddpg": {
+      "11": {
+        "model_path": "results/phase3_full/models/ddpg/ddpg_seed_11.pt",
+        "curve_path": "results/phase3_full/curves/ddpg/ddpg_seed_11_curve.csv",
+        "final_eval_dcr": 45.0,
+        "wall_seconds": 33809.47734093666,
+        "status": "trained_subprocess"
+      },
+      "22": {
+        "model_path": "results/phase3_full/models/ddpg/ddpg_seed_22.pt",
+        "curve_path": "results/phase3_full/curves/ddpg/ddpg_seed_22_curve.csv",
+        "final_eval_dcr": 9.03841876917534,
+        "wall_seconds": 27493.22652721405,
+        "status": "trained_subprocess"
+      },
+      "33": {
+        "model_path": "results/phase3_full/models/ddpg/ddpg_seed_33.pt",
+        "curve_path": "results/phase3_full/curves/ddpg/ddpg_seed_33_curve.csv",
+        "final_eval_dcr": 45.0,
+        "wall_seconds": 34094.8759226799,
+        "status": "trained_subprocess"
+      }
+    }
+  }
+}

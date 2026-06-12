@@ -1,0 +1,6 @@
+{
+  "seed": 11,
+  "model_path": "results/phase4_fix1/models/ppo_full/ppo_full_seed_11.pt",
+  "curve_path": "results/phase4_fix1/curves/ppo_full/ppo_full_seed_11_curve.csv",
+  "final_eval_dcr": 3.4927234927234934
+}

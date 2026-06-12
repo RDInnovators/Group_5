@@ -1,0 +1,7 @@
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[fix1_train_one] start seed=11 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_full] seed=11 step=5000000/5000000
+[fix1_train_one] done seed=11 wall_s=11351.7 final_eval_dcr=3.4927234927234934
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()

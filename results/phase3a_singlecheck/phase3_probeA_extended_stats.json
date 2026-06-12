@@ -1,0 +1,33 @@
+{
+  "seed": 11,
+  "total_steps": 1000000,
+  "device": "cuda",
+  "settings": {
+    "reward_scale": 0.1,
+    "gamma": 0.99,
+    "vf_coef": 0.5,
+    "advantage_norm": true,
+    "critic": "default"
+  },
+  "elapsed_sec": 2445.6005392074585,
+  "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_probeA_extended_1M_curve.csv",
+  "explained_variance": {
+    "first": 0.006786650969274666,
+    "mean": 0.45637833689880264,
+    "last": 0.6351420166198928,
+    "max": 0.8597412508075464,
+    "tail_mean_last30pct": 0.6430112397043529,
+    "tail_min_last30pct": 0.08256104498449235
+  },
+  "value_target_std_mean": 4.426467455742292,
+  "dcr": {
+    "first": 28.950103950103955,
+    "last": 69.36590436590437,
+    "last5_mean": 62.440748440748436
+  },
+  "entropy": {
+    "first": 2.3722522324323654,
+    "last": 2.247314064266781,
+    "last5_mean": 2.2554147476827104
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variant": "ddpg",
+  "seed": 33,
+  "model_path": "results/phase3_full/models/ddpg/ddpg_seed_33.pt",
+  "curve_path": "results/phase3_full/curves/ddpg/ddpg_seed_33_curve.csv",
+  "final_eval_dcr": 45.0
+}

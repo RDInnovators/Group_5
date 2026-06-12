@@ -1,0 +1,117 @@
+{
+  "probe_A": {
+    "name": "probeA_rewardscale",
+    "settings": {
+      "reward_scale": 0.1,
+      "gamma": 0.99,
+      "vf_coef": 0.5,
+      "large_critic": false,
+      "advantage_norm": true
+    },
+    "elapsed_sec": 290.0646414756775,
+    "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_probeA_rewardscale_100k_curve.csv",
+    "explained_variance": {
+      "first": 0.006786650969274666,
+      "mean": 0.04402140512122844,
+      "last": 0.26237616588899326,
+      "max": 0.5702424409725034
+    },
+    "value_target_std_mean": 3.148302755417205,
+    "adv_raw_std_mean": 3.068788834980556,
+    "dcr": {
+      "first": 40.83160083160083,
+      "last": 17.920997920997923,
+      "last3_mean": 21.663201663201665
+    },
+    "entropy": {
+      "eval_first": 2.371215049053232,
+      "eval_last": 2.3809546958406766
+    },
+    "vf_loss": {
+      "first": 10.427691876888275,
+      "last": 2.3442110121250153,
+      "mean": 4.918105095624924
+    }
+  },
+  "probe_B": {
+    "name": "probeB_gamma095",
+    "settings": {
+      "reward_scale": 0.1,
+      "gamma": 0.95,
+      "vf_coef": 0.5,
+      "large_critic": false,
+      "advantage_norm": true
+    },
+    "elapsed_sec": 290.89230847358704,
+    "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_probeB_gamma095_100k_curve.csv",
+    "explained_variance": {
+      "first": 0.011306236974674477,
+      "mean": 0.0004305201443358143,
+      "last": -0.0092664851147648,
+      "max": 0.07434666110682064
+    },
+    "value_target_std_mean": 1.7708772348053416,
+    "adv_raw_std_mean": 1.7699272900211567,
+    "dcr": {
+      "first": 41.22661122661123,
+      "last": 25.53014553014553,
+      "last3_mean": 21.33749133749134
+    },
+    "entropy": {
+      "eval_first": 2.3757683686663706,
+      "eval_last": 1.9604433314626415
+    },
+    "vf_loss": {
+      "first": 3.864232689142227,
+      "last": 1.1145018488168716,
+      "mean": 1.6552070076672398
+    }
+  },
+  "probe_C": {
+    "name": "probeC_bigcritic_vf1",
+    "settings": {
+      "reward_scale": 0.1,
+      "gamma": 0.95,
+      "vf_coef": 1.0,
+      "large_critic": true,
+      "advantage_norm": true
+    },
+    "elapsed_sec": 300.7291705608368,
+    "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_probeC_bigcritic_vf1_100k_curve.csv",
+    "explained_variance": {
+      "first": -0.2015186473472641,
+      "mean": -0.2161516900766404,
+      "last": -0.20484781483033343,
+      "max": 0.016294601293858846
+    },
+    "value_target_std_mean": 1161.2284712770945,
+    "adv_raw_std_mean": 1262.6297976435446,
+    "dcr": {
+      "first": 25.97713097713098,
+      "last": 20.58212058212058,
+      "last3_mean": 23.312543312543312
+    },
+    "entropy": {
+      "eval_first": 2.386253721167644,
+      "eval_last": 2.3861577395598093
+    },
+    "vf_loss": {
+      "first": 2517885.015625,
+      "last": 6473729.25,
+      "mean": 4311012.044076102
+    }
+  },
+  "recommendation": {
+    "best_probe": "probe_A",
+    "reason": "highest mean explained_variance_preupdate over 100k diagnostic run",
+    "target_ev_threshold": 0.3,
+    "best_ev_mean": 0.04402140512122844,
+    "best_settings": {
+      "reward_scale": 0.1,
+      "gamma": 0.99,
+      "vf_coef": 0.5,
+      "large_critic": false,
+      "advantage_norm": true
+    }
+  }
+}

@@ -1,0 +1,4 @@
+  File "<stdin>", line 34
+    PY & echo $!
+              ^
+SyntaxError: invalid syntax

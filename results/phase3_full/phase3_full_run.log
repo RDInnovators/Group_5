@@ -1,0 +1,121 @@
+[ppo_full] seed=11 reuse existing artifacts
+[ppo_full] seed=22 reuse existing artifacts
+[ppo_full] seed=33 reuse existing artifacts
+[ppo_no_curriculum] seed=11 reuse existing artifacts
+[ppo_no_curriculum] seed=22 reuse existing artifacts
+[ppo_no_curriculum] seed=33 reuse existing artifacts
+[TRAIN_QUEUE] total_jobs=15 pending_jobs=9 workers=2
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/usr/lib/python3.10/multiprocessing/resource_tracker.py:224: UserWarning: resource_tracker: There appear to be 5 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_no_escalation seed=11 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_no_escalation] seed=11 step=5000000/5000000
+[train_one_job] done variant=ppo_no_escalation seed=11 wall_s=11158.0 final_eval_dcr=88.49272349272348
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_no_escalation seed=22 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_no_escalation] seed=22 step=5000000/5000000
+[train_one_job] done variant=ppo_no_escalation seed=22 wall_s=11286.8 final_eval_dcr=91.38253638253637
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_no_escalation seed=33 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_no_escalation] seed=33 step=5000000/5000000
+[train_one_job] done variant=ppo_no_escalation seed=33 wall_s=11445.8 final_eval_dcr=6.663201663201664
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_neither seed=11 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_neither] seed=11 step=5000000/5000000
+[train_one_job] done variant=ppo_neither seed=11 wall_s=11298.5 final_eval_dcr=86.22661122661123
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_neither seed=22 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_neither] seed=22 step=5000000/5000000
+[train_one_job] done variant=ppo_neither seed=22 wall_s=11271.0 final_eval_dcr=89.86486486486487
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ppo_neither seed=33 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[ppo_neither] seed=33 step=5000000/5000000
+[train_one_job] done variant=ppo_neither seed=33 wall_s=11376.9 final_eval_dcr=70.38461538461539
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ddpg seed=11 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[DDPG] seed=11 step=500000/5000000
+[DDPG] seed=11 step=1000000/5000000
+[DDPG] seed=11 step=1500000/5000000
+[DDPG] seed=11 step=2000000/5000000
+[DDPG] seed=11 step=2500000/5000000
+[DDPG] seed=11 step=3000000/5000000
+[DDPG] seed=11 step=3500000/5000000
+[DDPG] seed=11 step=4000000/5000000
+[DDPG] seed=11 step=4500000/5000000
+[DDPG] seed=11 step=5000000/5000000
+[train_one_job] done variant=ddpg seed=11 wall_s=33796.6 final_eval_dcr=45.0
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ddpg seed=22 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[DDPG] seed=22 step=500000/5000000
+[DDPG] seed=22 step=1000000/5000000
+[DDPG] seed=22 step=1500000/5000000
+[DDPG] seed=22 step=2000000/5000000
+[DDPG] seed=22 step=2500000/5000000
+[DDPG] seed=22 step=3000000/5000000
+[DDPG] seed=22 step=3500000/5000000
+[DDPG] seed=22 step=4000000/5000000
+[DDPG] seed=22 step=4500000/5000000
+[DDPG] seed=22 step=5000000/5000000
+[train_one_job] done variant=ddpg seed=22 wall_s=27480.3 final_eval_dcr=9.03841876917534
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+[train_one_job] start variant=ddpg seed=33 device=cuda locked(reward_scale=0.1, gamma=0.99, vf_coef=0.5)
+[DDPG] seed=33 step=500000/5000000
+[DDPG] seed=33 step=1000000/5000000
+[DDPG] seed=33 step=1500000/5000000
+[DDPG] seed=33 step=2000000/5000000
+[DDPG] seed=33 step=2500000/5000000
+[DDPG] seed=33 step=3000000/5000000
+[DDPG] seed=33 step=3500000/5000000
+[DDPG] seed=33 step=4000000/5000000
+[DDPG] seed=33 step=4500000/5000000
+[DDPG] seed=33 step=5000000/5000000
+[train_one_job] done variant=ddpg seed=33 wall_s=34082.0 final_eval_dcr=45.0
+/home/situser1/Water/.venv/lib/python3.10/site-packages/torch/cuda/__init__.py:1061: UserWarning: Can't initialize NVML
+  raw_cnt = _raw_device_count_nvml()
+/home/situser1/Water/phase3_full_run.py:546: RuntimeWarning: Mean of empty slice
+  row[k] = float(np.nanmean(vals))
+/home/situser1/Water/phase3_full_run.py:721: RuntimeWarning: Mean of empty slice
+  t[f"{mk}_mean"] = float(np.nanmean(vals))
+/home/situser1/Water/.venv/lib/python3.10/site-packages/numpy/lib/_nanfunctions_impl.py:2019: RuntimeWarning: Degrees of freedom <= 0 for slice.
+  var = nanvar(a, axis=axis, dtype=dtype, out=out, ddof=ddof,
+[ppo_full] seed=11 reuse existing artifacts
+[ppo_full] seed=22 reuse existing artifacts
+[ppo_full] seed=33 reuse existing artifacts
+[ppo_no_curriculum] seed=11 reuse existing artifacts
+[ppo_no_curriculum] seed=22 reuse existing artifacts
+[ppo_no_curriculum] seed=33 reuse existing artifacts
+[TRAIN_QUEUE] total_jobs=15 pending_jobs=9 workers=1-subprocess
+[TRAIN_START] variant=ppo_no_escalation seed=11
+[TRAIN_DONE] variant=ppo_no_escalation seed=11 final_eval_dcr=88.49272349272348
+[TRAIN_START] variant=ppo_no_escalation seed=22
+[TRAIN_DONE] variant=ppo_no_escalation seed=22 final_eval_dcr=91.38253638253637
+[TRAIN_START] variant=ppo_no_escalation seed=33
+[TRAIN_DONE] variant=ppo_no_escalation seed=33 final_eval_dcr=6.663201663201664
+[TRAIN_START] variant=ppo_neither seed=11
+[TRAIN_DONE] variant=ppo_neither seed=11 final_eval_dcr=86.22661122661123
+[TRAIN_START] variant=ppo_neither seed=22
+[TRAIN_DONE] variant=ppo_neither seed=22 final_eval_dcr=89.86486486486487
+[TRAIN_START] variant=ppo_neither seed=33
+[TRAIN_DONE] variant=ppo_neither seed=33 final_eval_dcr=70.38461538461539
+[TRAIN_START] variant=ddpg seed=11
+[TRAIN_DONE] variant=ddpg seed=11 final_eval_dcr=45.0
+[TRAIN_START] variant=ddpg seed=22
+[TRAIN_DONE] variant=ddpg seed=22 final_eval_dcr=9.03841876917534
+[TRAIN_START] variant=ddpg seed=33
+[TRAIN_DONE] variant=ddpg seed=33 final_eval_dcr=45.0
+[DONE] wrote actual_results.md

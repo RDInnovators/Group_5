@@ -1,0 +1,12 @@
+{
+  "seed": 11,
+  "total_steps": 400000,
+  "device": "cuda",
+  "elapsed_sec": 960.8006708621979,
+  "eval_points": 8,
+  "eval_dcr_first": 32.182952182952185,
+  "eval_dcr_last": 23.898128898128903,
+  "eval_dcr_last5_mean": 26.343035343035343,
+  "curve_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_short_curve.csv",
+  "model_path": "/home/situser1/Water/results/phase3a_singlecheck/ppo_seed11_short.pt"
+}
