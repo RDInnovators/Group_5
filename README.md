@@ -95,6 +95,14 @@ Full detail files:
 - `results/phase3_full/phase3c_stats.json`
 - `results/phase3_full/eval/`
 
+## Manuscript Figures
+
+- **Figure 1 (methodology workflow):** `figures_paper/figure_methodology_workflow.(png/pdf/svg)`
+- **Figure 2 (headline Tier-1 DCR/TCU):** `figures_paper/figure1_tier1_dcr_tcu.(png/pdf/svg)`
+- **Figure 3 (PPO seed divergence):** `figures_paper/figure2_ppo_seed_divergence.(png/pdf/svg)`
+- **Figure 4 (failure mechanism, in-band dosing):** `figures_paper/figure3_inband_dosing_fraction.(png/pdf/svg)`
+- **Figure 5 (Tier-1 CER):** `figures_paper/figure4_tier1_cer.(png/pdf/svg)`
+
 ## 5. Documentation / Report Index
 
 All report-style Markdown files at repo root:

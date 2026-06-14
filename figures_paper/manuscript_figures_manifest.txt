@@ -1,0 +1,13 @@
+figures_paper/figure1_tier1_dcr_tcu.png
+figures_paper/figure1_tier1_dcr_tcu.pdf
+figures_paper/figure1_tier1_dcr_tcu.svg
+figures_paper/figure2_ppo_seed_divergence.png
+figures_paper/figure2_ppo_seed_divergence.pdf
+figures_paper/figure2_ppo_seed_divergence.svg
+figures_paper/figure3_inband_dosing_fraction.png
+figures_paper/figure3_inband_dosing_fraction.pdf
+figures_paper/figure3_inband_dosing_fraction.svg
+figures_paper/figure4_tier1_cer.png
+figures_paper/figure4_tier1_cer.pdf
+figures_paper/figure4_tier1_cer.svg
+figures_paper/manuscript_figure_captions.txt

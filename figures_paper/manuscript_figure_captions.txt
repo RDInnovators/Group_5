@@ -1,0 +1,4 @@
+Figure 1: Tier-1 DCR and TCU show that deadband PID combines the highest compliance with far lower chemical usage than PPO full.
+Figure 2: PPO full training curves diverge strongly across seeds 11, 22, and 33, indicating unstable convergence behavior.
+Figure 3: In-band dosing audit shows best-seed PPO doses on 91.08% of compliant timesteps versus 0.39% for deadband PID.
+Figure 4: Tier-1 CER comparison shows classical controllers dominate PPO full on compliance-efficiency trade-off.

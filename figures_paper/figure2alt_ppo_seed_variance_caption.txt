@@ -1,0 +1,1 @@
+Figure 2-alt: Tier-1 DCR varies widely across PPO(full) seeds (11, 22, 33), while deadband PID remains a higher fixed compliance reference.
